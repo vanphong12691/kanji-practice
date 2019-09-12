@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <style>
+      html{
+        height: 100%;
+      }
+      body{
+        margin: 0;
+        height: 100%;
+      }
+      .flashcard{
+          width: 100%;
+          height: 100%;
+          border: 1px solid #00BFFF;
+          box-sizing: border-box;
+          position: relative;
+      }
+
+      #hole {
+          -webkit-app-region: drag;
+          -webkit-user-select: none;
+          font-size: 8px;
+          position: absolute;
+          width: 30px;
+          height: 30px;
+          box-sizing: border-box;
+          border: 5px solid white;
+          right: 0;
+          top: 0;
+      }
+      #hole:before {
+          content: "";
+          box-sizing: border-box;
+          position: absolute;
+          border: 5px solid white;
+          width: 30px;
+          height: 30px;
+          border-radius: 15px;
+          left: 50%;
+          top: -5px;
+          margin-left: -15px;
+      }
+
+      #hole:after {
+          position: absolute;
+          content: "";
+          box-sizing: border-box;
+          width: 20px;
+          height: 20px;
+          border-radius: 10px;
+          border: 1px solid #00BFFF;
+      }
+
+      .background-top{
+
+          height: 30px;
+          width: -moz-calc(100% - 30px);
+          width: -webkit-calc(100% - 30px);
+          width: calc(100%- 30px);
+      }
+      .background-bottom, .background-top{
+          background-color: rgb(255,255,255);
+
+      }
+      .background-bottom{
+          position: absolute;
+          top: 30px;
+          width: 100%;
+          height: -moz-calc(100% - 30px);
+          height: -webkit-calc(100% - 30px);
+          height: calc(100%- 30px);
+
+      }
+      .f-content{
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+      }
+
+      .large-kanji{
+          width: 100%;
+          height: 100%;
+          text-align: center;
+          font-weight: bold;
+          color: #0099BC;
+      }
+
+      .large-kanji .content{
+          font-size: 100px;
+          position: relative;
+          top: 50%;
+          transform: translateY(-50%);
+      }
+
+      .content-detail{
+          display: none;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+      }
+
+        .large-kanji .control{
+            position: absolute;
+        }
+        .control span{
+            display: inline-block;
+
+        }
+
+        .bottom{
+            bottom: 0;
+        }
+
+        .left{
+            left: 0;
+        }
+        .top{
+            top: 0;
+        }
+
+        .right{
+          right: 0;
+        }
+
+        #close{
+            color: red;
+        }
+
+        #like{
+            color: brown;
+        }
+
+        i:hover{
+            cursor: pointer;
+        }
+        .control span{
+            width: 35px;
+            height: 35px;
+            font-size: 25px;
+            line-height: 35px;
+        }
+
+        .control span:hover{
+            background-color: #eeeeeeee;
+        }
+
+        .loading{
+            position: absolute;
+
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: #fffffffa;
+            z-index: 999;
+        }
+
+      .lds-spinner {
+          display: inline-block;
+          position: relative;
+          width: 64px;
+          height: 64px;
+          margin: 0 auto;
+          top: 50%;
+          transform: translateY(-50%);
+      }
+      .lds-spinner div {
+          transform-origin: 32px 32px;
+          animation: lds-spinner 1.2s linear infinite;
+      }
+      .lds-spinner div:after {
+          content: " ";
+          display: block;
+          position: absolute;
+          top: 3px;
+          left: 29px;
+          width: 5px;
+          height: 14px;
+          border-radius: 20%;
+          background: #0099BC;
+      }
+      .lds-spinner div:nth-child(1) {
+          transform: rotate(0deg);
+          animation-delay: -1.1s;
+      }
+      .lds-spinner div:nth-child(2) {
+          transform: rotate(30deg);
+          animation-delay: -1s;
+      }
+      .lds-spinner div:nth-child(3) {
+          transform: rotate(60deg);
+          animation-delay: -0.9s;
+      }
+      .lds-spinner div:nth-child(4) {
+          transform: rotate(90deg);
+          animation-delay: -0.8s;
+      }
+      .lds-spinner div:nth-child(5) {
+          transform: rotate(120deg);
+          animation-delay: -0.7s;
+      }
+      .lds-spinner div:nth-child(6) {
+          transform: rotate(150deg);
+          animation-delay: -0.6s;
+      }
+      .lds-spinner div:nth-child(7) {
+          transform: rotate(180deg);
+          animation-delay: -0.5s;
+      }
+      .lds-spinner div:nth-child(8) {
+          transform: rotate(210deg);
+          animation-delay: -0.4s;
+      }
+      .lds-spinner div:nth-child(9) {
+          transform: rotate(240deg);
+          animation-delay: -0.3s;
+      }
+      .lds-spinner div:nth-child(10) {
+          transform: rotate(270deg);
+          animation-delay: -0.2s;
+      }
+      .lds-spinner div:nth-child(11) {
+          transform: rotate(300deg);
+          animation-delay: -0.1s;
+      }
+      .lds-spinner div:nth-child(12) {
+          transform: rotate(330deg);
+          animation-delay: 0s;
+      }
+      @keyframes lds-spinner {
+          0% {
+              opacity: 1;
+          }
+          100% {
+              opacity: 0;
+          }
+      }
+    </style>
+  </head>
+  <body>
+
+  <div class="flashcard">
+      <div class="background-top"></div>
+      <div class="background-bottom"></div>
+      <div id="hole"></div>
+      <div class="f-content">
+          <div class="large-kanji">
+              <div class="loading">
+                  <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+              </div>
+              <div class="content"></div>
+              <div class="control left bottom main">
+                  <!--<span id="back"><i class="fas fa-chevron-circle-right fa-rotate-180"></i></span>-->
+                  <span id="next"><i class="fas fa-chevron-circle-right"></i></span>
+                  <span id="like"><i class="fas fa-heartbeat"></i></span>
+                  <span id="setting"><i class="fas fa-user-cog"></i></span>
+                  <!--<span id="play"><i class="fas fa-volume-up"></i></i></span>-->
+                  <span id="view"><i class="fas fa-info-circle"></i></span>
+              </div>
+              <div class="control bottom right">
+                  <span id="close"><i class="fas fa-times"></i></span>
+              </div>
+          </div>
+          <div class="content-detail"></div>
+      </div>
+  </div>
+
+    <!--<input type="button" id="checkJquery" value="check jquery">
+    <div id="image-kanji" style="width: 200px; height: 200px"></div>-->
+    <!-- You can also require other files to run in this process -->
+    <script> window.$ = window.jQuery = require('jquery');</script>
+    <script src="./plugins/draw/raphael.min.js"></script>
+    <script src="./plugins/draw/dmak.js"></script>
+    <script src="./plugins/draw/dmakLoader.js"></script>
+    <script src="./plugins/draw/jquery.dmak.js"></script>
+    <script src="./plugins/16c000383a.js"></script>
+    <script src="./renderer.js"></script>
+
+    <script>
+        if (window.module) module = window.module;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,154 @@
+<style>
+    body .flashcard p{
+        margin-block-start: 0;
+        margin-block-end: 0;
+    }
+
+    .img-kanji{
+        position: absolute;
+        top: 0;
+        width: 35%;
+        left: 0;
+        bottom: 0;
+        background-color: #82959C;
+    }
+
+    .kanji-detail{
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 35%;
+        bottom: 0;
+        padding-left: 5px;
+    }
+
+    .kanji-detail .meaning{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 30px;
+        height: 30px;
+        line-height: 30px;
+        padding-left: 5px;
+        background-color: #0099BC;
+        color: white;
+    }
+
+    #hole, #hole:before{
+        border-color: #0099BC!important;
+    }
+
+    .kanji-detail span, .img-kanji span{
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden !important;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+    .kanji-detail .example{
+        position: absolute;
+        top: 30px;
+        left: 0;
+        bottom: 30px;
+        right: 0;
+        overflow-y: auto;
+        padding-top: 8px;
+        font-size: 14px;
+        line-height: 17px;
+        padding-left: 5px;
+        background-color: rgba(11, 150, 226, 0.35);
+        color: rgba(55, 66, 72, 0.86);
+
+    }
+
+    .am-on, .am-kun{
+        position: absolute;
+        height: 20px;
+        width: 100%;
+        line-height: 20px;
+        font-size: 12px;
+        color: white;
+        left: 5px;
+        right: 0;
+    }
+    .am-on{
+        bottom: 2px;
+    }
+
+    .am-kun{
+        bottom: 25px;
+    }
+
+    .am-han{
+        text-align: center;
+        font-weight: bold;
+        height: 30px;
+        line-height: 30px;
+    }
+
+    .guideline{
+        position: absolute;
+        height: 30px;
+        line-height: 30px;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        padding-left: 5px;
+        padding-right: 5px;
+        font-size: 14px;
+        overflow: hidden !important;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .draw-kanji{
+        width: 100%;
+        height: 0;
+        padding-bottom: 100%;
+    }
+    .img-kanji-reload, .back-main-kanji{
+        position: absolute;
+        color: #0099BC;
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+        line-height: 30px;
+        text-align: center;
+
+    }
+    .img-kanji-reload{
+        top: 0;
+        right: 0;
+        font-size: 19px;
+    }
+    .back-main-kanji:hover, .img-kanji-reload:hover{
+        font-size: 22px;
+    }
+</style>
+
+    <div class="img-kanji">
+        <div class="back-main-kanji"><i class="fas fa-chevron-circle-right fa-rotate-180"></i></div>
+        <div class="am-han" data-tooltip="<%= mean %>"><%= mean.substr(0, mean.indexOf(',') > 0 ?  mean.indexOf(',') : mean.length) %></div>
+        <div class="draw-kanji" id="draw-kanji"></div>
+        <div class="am-kun"><span data-tooltip="<%=kun%>">訓: <%=kun%></span></div>
+        <div class="am-on"><span data-tooltip="<%=on%>">音: <%= on %></span></div>
+        <div class="img-kanji-reload"><i class="fas fa-undo-alt"></i></div>
+    </div>
+<div class="kanji-detail">
+    <div class="meaning" data-tooltip="<%=detail.substr(0, detail.indexOf('#') > 0 ? detail.indexOf('#') : detail.length)%>">
+        <span><%=detail.substr(0, detail.indexOf('#') > 0 ? detail.indexOf('#') : detail.length)%></span>
+    </div>
+    <div class="example">
+        <%
+        examples.forEach((item, index) => {
+            if(index > 4) return;
+        %>
+        <span data-tooltip="<%='('+item.h+') '+item.m%>"><%=item.w+' ('+ item.p+') '+ item.m %></span>
+        <%
+        })
+        %>
+    </div>
+    <div class="guideline">
+    </div>
+</div>
+
