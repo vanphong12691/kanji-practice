@@ -5,11 +5,15 @@
 const axios = require('axios');
 const ejs = require('ejs');
 const {ipcRenderer}  = require('electron');
+const { dialog, BrowserWindow } = require('electron').remote
+
 const path = require('path');
 let data;
+let pastData = {};
+let nextData = [];
 const tooltip = require(path.join(__dirname,'/plugins/electron-tooltip/src/electron-tooltip'))
 tooltip({position: 'bottom'})
-var random;
+var random = -1;
 function fetchData() {
     // you might need the next line, depending on your API provider.
     axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -17,15 +21,59 @@ function fetchData() {
         .then((response) => {
             $('.loading').remove();
             data = response.data.results;
-            loadRandomData();
+            initNextData();
             if(data){
-                random = Math.floor(Math.random() * (data.length - 1));
+                getNextRandom();
                 $('.large-kanji .content').html(data[random].value.kanji);
+                loadRandomData();
             }
         })
         .catch((error) => {
 
         });
+}
+function initNextData() {
+    for (let i = 0; i < data.length; i++){
+        nextData.push(i);
+    }
+}
+
+function getNextRandom(){
+    if(random === -1 || pastData[random]['next'] === -1){
+        if(nextData.length === 0){
+            initNextData();
+            pastData = {};
+            random = -1;
+        }
+        let oldRandom = random;
+        let randomNext = Math.floor(Math.random() * (nextData.length - 1));
+        random = nextData[randomNext];
+        nextData.splice(randomNext, 1);
+        if(oldRandom >= 0)
+            pastData[oldRandom]['next'] = random;
+
+        pastData[random] = {back : oldRandom, next: -1};
+    }else{
+        random = pastData[random]['next'];
+    }
+}
+
+function getBackRandom(){
+    if(pastData[random]['back'] === -1){
+        dialog.showMessageBox(
+            new BrowserWindow({
+                show: false,
+                alwaysOnTop: true,
+                frame: false,
+            }),
+            {
+                type: 'question',
+                message: 'Không có dữ liệu để quay lại!'
+            }
+        )
+    }else{
+        random = pastData[random]['back'];
+    }
 }
 
 $('.f-content').on('click', '.img-kanji-reload', function (e) {
@@ -39,13 +87,20 @@ $('.f-content').on('click', '.back-main-kanji', function (e) {
     loadRandomData();
 });
 
-document.getElementById('close').addEventListener('click', () => {
+/*document.getElementById('close').addEventListener('click', () => {
     ipcRenderer.send('close-app')
-});
+});*/
 
 document.getElementById('next').addEventListener('click', () => {
-    random = Math.floor(Math.random() * (data.length - 1));
+    getNextRandom();
     $('.large-kanji .content').html(data[random].value.kanji);
+    loadRandomData()
+});
+
+document.getElementById('back').addEventListener('click', () => {
+    getBackRandom();
+    $('.large-kanji .content').html(data[random].value.kanji);
+    loadRandomData()
 });
 
 document.getElementById('setting').addEventListener('click', () => {
@@ -100,7 +155,7 @@ function loadRandomData() {
     clearInterval(interval);
     interval = setInterval(function(){
         if(data) {
-            random = Math.floor(Math.random() * (data.length - 1));
+            getNextRandom();
             $('.large-kanji .content').html(data[random].value.kanji);
         }
     }, 30000);
