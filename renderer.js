@@ -4,8 +4,9 @@
 
 const axios = require('axios');
 const ejs = require('ejs');
+
 const {ipcRenderer}  = require('electron');
-const { dialog, BrowserWindow } = require('electron').remote
+const { dialog, BrowserWindow, ipcMain } = require('electron').remote
 
 const path = require('path');
 let data;
@@ -14,12 +15,27 @@ let nextData = [];
 const tooltip = require(path.join(__dirname,'/plugins/electron-tooltip/src/electron-tooltip'))
 tooltip({position: 'bottom'})
 var random = -1;
-function fetchData() {
+
+ipcMain.on('change-setting',function(){
+    random = -1;
+    nextData = [];
+    data = null;
+    pastData = {};
+    storage.get('setting', function(error, data) {
+        console.log(data);
+        if(data){
+            $('.loading').show();
+            fetchData('https://mazii.net/api/jlptkanji/'+data.jlpt+'/100/'+(parseInt(data.page)-1));
+        }
+    });
+});
+
+function fetchData(url) {
     // you might need the next line, depending on your API provider.
     axios.defaults.headers.post['Content-Type'] = 'application/json';
-    axios.get('https://mazii.net/api/jlptkanji/5/100/0', {/* here you can pass any parameters you want */})
+    axios.get(url, {/* here you can pass any parameters you want */})
         .then((response) => {
-            $('.loading').remove();
+            $('.loading').hide();
             data = response.data.results;
             initNextData();
             if(data){
@@ -145,10 +161,14 @@ function loadMemo(mobileId){
             tooltip({position: 'bottom'})
         });
 }
+const storage = require('electron-json-storage');
 
+storage.get('setting', function(error, data) {
+    if(data){
+        fetchData('https://mazii.net/api/jlptkanji/'+data.jlpt+'/100/'+(parseInt(data.page)-1));
+    }
+});
 
-
-fetchData();
 let interval = null;
 function loadRandomData() {
 

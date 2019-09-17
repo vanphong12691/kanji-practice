@@ -4,12 +4,246 @@
     <meta charset="UTF-8">
     <title>Setting</title>
     <style>
+        html{
+            height: 100%;
+        }
+        body{
+            margin: 0;
+            height: 100%;
+        }
+        .bottom{
+            bottom: 0;
+        }
+
+        .left{
+            left: 0;
+        }
+        .top{
+            top: 0;
+        }
+
+        .right{
+            right: 0;
+        }
+        .setting-area{
+            width: 640px;
+            height: 360px;
+            border: 1px solid #00bce6;
+            box-sizing: border-box;
+            position: relative;
+            color: #000000CF;
+            background: transparent;
+        }
+        .setting-left{
+            position: absolute;
+            width: 180px;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            background-color: #CFCFCFBD;
+        }
+
+        .setting-right{
+            background-color: white;
+            left: 180px;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            position: absolute;
+            padding: 30px 20px 20px 20px;
+        }
+
+        .menu-top{
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 30px;
+            z-index: 1;
+            -webkit-app-region: drag;
+        }
+        .menu-top span{
+            -webkit-app-region: no-drag;
+        }
+
+        .menu-btn{
+            position: absolute;
+            height: 100%;
+            line-height: 30px;
+            font-size: 13px;
+        }
+        .menu-btn span{
+            width: 36px;
+            display: inline-block;
+            text-align: center;
+        }
+        .menu-btn span:hover {
+            background-color: #0099BCBB;
+        }
+        .setting-left .title{
+            height: 30px;
+            line-height: 30px;
+            margin-left: 35px;
+            margin-bottom: 10px;
+        }
+
+        .setting-item{
+            height: 40px;
+            line-height: 40px;
+            padding-left: 10px;
+            position: relative;
+            font-size: 18px;
+        }
+
+        .setting-item:hover{
+            background-color: #00000033;
+        }
+
+        .setting-item.active:before{
+            content: "";
+            position: absolute;
+            width: 3px;
+            top: 6px;
+            bottom: 6px;
+            left: 0;
+            background-color: #00b7e2;
+        }
+        .header{
+            font-size: 30px;
+            margin-top: 10px;
+        }
+
+        .title-group{
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        /* The container must be positioned relative: */
+        .custom-select {
+            position: relative;
+            font-family: Arial;
+        }
+
+        .custom-select select {
+            display: none; /*hide original SELECT element: */
+        }
+
+        .select-selected {
+            background-color:darkgray;
+        }
+
+        /* Style the arrow inside the select element: */
+        .select-selected:after {
+            position: absolute;
+            content: "";
+            top: 14px;
+            right: 10px;
+            width: 0;
+            height: 0;
+            border: 6px solid transparent;
+            border-color: #fff transparent transparent transparent;
+        }
+
+        /* Point the arrow upwards when the select box is open (active): */
+        .select-selected.select-arrow-active:after {
+            border-color: transparent transparent #fff transparent;
+            top: 7px;
+        }
+
+        /* style the items (options), including the selected item: */
+        .select-items div,.select-selected {
+            color: #ffffff;
+            padding: 8px 16px;
+            border: 1px solid transparent;
+            border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+            cursor: pointer;
+        }
+
+        /* Style items (options): */
+        .select-items {
+            position: absolute;
+            background-color: darkgray;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 99;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        /* Hide the items when the select box is closed: */
+        .select-hide {
+            display: none;
+        }
+
+        .select-items div:hover, .same-as-selected {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* width */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
 
     </style>
+  <!--  <script src="../plugins/16c000383a.js"></script>-->
 </head>
 <body>
     <div class="setting-area">
-
+        <div class="menu-top">
+            <div class="left top menu-btn"><span id="back"><i class="fas fa-long-arrow-alt-left"></i></span></div>
+            <div class="right top menu-btn">
+                <span><i class="far fa-window-minimize"></i></span>
+                <span><i class="far fa-window-maximize"></i></span>
+                <span id="exit"><i class="fas fa-times"></i></span>
+            </div>
+        </div>
+        <div class="setting-left">
+            <div class="title">Setting</div>
+            <div class="setting-item active">
+                Level
+            </div>
+        </div>
+        <div class="setting-right">
+            <div class="header">Level</div>
+            <div class="title-group">JLPT</div>
+            <div class="custom-select" id="jlptSelect-custom" style="width:200px;">
+                <select id="jlptSelect">
+                    <option value="">Select</option>
+                </select>
+            </div>
+            <div class="title-group">Words</div>
+            <div class="custom-select" id="pageSelect-custom" style="width:200px;">
+                <select id="pageSelect">
+                    <option value="">Select</option>
+                    <option value="1">1~100</option>
+                    <option value="2">100~200</option>
+                </select>
+            </div>
+        </div>
     </div>
+
+    <script> window.$ = window.jQuery = require('jquery');</script>
+    <script src="../plugins/16c000383a.js"></script>
+    <script src="../setting.js"></script>
+    <script>
+        if (window.module) module = window.module;
+    </script>
 </body>
 </html>

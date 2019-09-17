@@ -64,11 +64,14 @@ function initialize () {
         ipcMain.on('open-setting',function(){
             if(!settingWindow){
                 settingWindow = new BrowserWindow({
-                    file: path.join('file://', __dirname, '/html/index.html'),
-                    height: 300,
-                    width:300,
-                    parent: mainWindow
-                })
+                    height: 360,
+                    width: 640,
+                    parent: mainWindow,
+                    frame: false,
+                    skipTaskbar: true,
+                    transparent: true,
+                });
+                settingWindow.loadURL(path.join('file://', __dirname, '/html/setting.html'))
             }
             settingWindow.on('closed', function (event) {
                 settingWindow = null
@@ -80,6 +83,7 @@ function initialize () {
             app.isQuiting = true
             app.quit()
         });
+
 
 
         mainWindow.on('close', function (event) {
