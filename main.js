@@ -17,8 +17,8 @@ function initialize () {
         mainWindow = new BrowserWindow({
             width: 360,
             height: 180,
-            /*x: width - 370,
-            y: height - 210,*/
+            x: width - 370,
+            y: height - 230,
             webPreferences: {
                 nodeIntegration: true
             },
