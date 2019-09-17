@@ -127,14 +127,16 @@ document.getElementById('pageSelect').addEventListener('change', function (e) {
 storage.get('setting', function(error, dt) {
     let jlpt = 5;
     let page = 1;
-    if(dt){
-        jlpt = dt.jlpt;
-        page = dt.page;
+    if (!error) {
+        if(dt){
+            jlpt = dt.jlpt;
+            page = dt.page;
+        }
     }
 
     let html = '<option>Select</option>';
     for (let i = 5; i >0; i--){
-        if(i== jlpt){
+        if(i == jlpt){
             html+= '<option value="'+i+'" selected>N'+i+'</option>'
         }else{
             html+= '<option value="'+i+'">N'+i+'</option>'
