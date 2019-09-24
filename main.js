@@ -1,5 +1,6 @@
 const electron = require('electron')
-const { app, BrowserWindow, Tray, Menu, ipcMain } = electron
+const { app, BrowserWindow, Tray, Menu, MenuItem , ipcMain } = electron
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -14,11 +15,14 @@ function initialize () {
         let width = display.bounds.width;
         let height = display.bounds.height;
         let settingWindow;
+
+
+
         mainWindow = new BrowserWindow({
-            width: 360,
-            height: 180,
-            x: width - 370,
-            y: height - 230,
+            width: 480,
+            height: 270,
+          /*  x: width - 370,
+            y: height - 230,*/
             webPreferences: {
                 nodeIntegration: true
             },
@@ -28,7 +32,15 @@ function initialize () {
             alwaysOnTop: true,
             resizable: false,
             transparent: true,
+
         });
+
+      //  mainWindow.setFullScreen(true)
+        mainWindow.setFullScreenable(false)
+
+        mainWindow.setMenuBarVisibility(false)
+
+
 
         var appIcon = new Tray(path.join(__dirname, '/assets/images/icon.png'));
 
@@ -45,15 +57,46 @@ function initialize () {
                 }
             }
         ]);
-
+        mainWindow.webContents.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/76.0.253539693 Mobile/16F203 Safari/604.1')
 
         appIcon.setContextMenu(contextMenu)
 
         // and load the index.html of the app.
-        mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
+       // mainWindow.loadURL(path.join('file://', __dirname, '/html/webview.html'))
+        mainWindow.loadURL("https://m.youtube.com/watch?v=I17kM2CwCGM")
 
+        mainWindow.webContents.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/76.0.253539693 Mobile/16F203 Safari/604.1')
         // Open the DevTools.
         // win.webContents.openDevTools()
+        mainWindow.webContents.on('did-finish-load', function () {
+
+           mainWindow.webContents.insertCSS('button#p-back-browser{\n' +
+               '    padding: 0 10px;\n' +
+               '}\n' +
+               'i.ic-back-browser{\n' +
+               '    border: solid white;\n' +
+               '    border-width: 0 5px 5px 0;\n' +
+               '    display: inline-block;\n' +
+               '    padding: 5px;\n' +
+               '    transform: rotate(135deg);\n' +
+               '  -webkit-transform: rotate(135deg);\n' +
+               '}');
+        });
+        mainWindow.webContents.on('did-start-loading', function () {
+            mainWindow.webContents.executeJavaScript('setTimeout(function(){\n' +
+                '    if(!document.getElementById("p-back-browser")){\n' +
+                '        var node = document.createElement("button");\n' +
+                '        var icon = document.createElement(\'i\');\n' +
+                '        icon.className = "ic-back-browser"\n' +
+                '        node.id="p-back-browser";\n' +
+                '        node.onclick  = function(){\n' +
+                '            window.history.back();\n' +
+                '        }\n' +
+                '        node.appendChild(icon);\n' +
+                '        document.querySelector(\'.mobile-topbar-header\').prepend(node);\n' +
+                '    }\n' +
+                '}, 1000);');
+        });
 
 
         mainWindow.on('minimize',function(event){
@@ -157,3 +200,40 @@ function makeSingleInstance () {
     })
 }
 initialize();
+
+
+/*
+setTimeout(function(){
+    if(!document.getElementById("p-back-browser")){
+        var node = document.createElement("button");
+        var icon = document.createElement('i');
+        icon.className = "ic-back-browser"
+        node.id="p-back-browser";
+        node.onclick  = function(){
+            const customTitlebar = require('custom-electron-titlebar');
+            new customTitlebar.Titlebar({
+                backgroundColor: customTitlebar.Color.fromHex('#444')
+            });
+            window.history.back();
+        }
+        node.appendChild(icon);
+        document.querySelector('.mobile-topbar-header').prepend(node);
+    }
+}, 1000);
+*/
+
+
+/*
+button#p-back-browser{
+    padding: 0 10px;
+}
+i.ic-back-browser{
+    border: solid white;
+    border-width: 0 5px 5px 0;
+    display: inline-block;
+    padding: 5px;
+    transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+}
+*/
+
