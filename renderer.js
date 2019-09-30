@@ -103,9 +103,9 @@ $('.f-content').on('click', '.back-main-kanji', function (e) {
     loadRandomData();
 });
 
-/*document.getElementById('close').addEventListener('click', () => {
-    ipcRenderer.send('close-app')
-});*/
+document.getElementById('youtube').addEventListener('click', () => {
+    ipcRenderer.send('open-youtube');
+});
 
 document.getElementById('next').addEventListener('click', () => {
     getNextRandom();
@@ -151,7 +151,7 @@ function loadMemo(mobileId){
                 }
                 if(response.data.result[max].like>response.data.result[max].dislike){
                     document.getElementsByClassName('guideline')[0].innerHTML   = response.data.result[max].mean;
-                    document.getElementsByClassName('guideline')[0].setAttribute("data-tooltip", response.data.result[max].mean);
+                    document.getElementsByClassName('guideline')[0].setAttribute("title", response.data.result[max].mean);
                 }
             }
             tooltip({position: 'bottom'})

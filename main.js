@@ -5,6 +5,7 @@ const { app, BrowserWindow, Tray, Menu, MenuItem , ipcMain } = electron
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow = null;
+const fs = require("fs");
 const path = require('path');
 const debug = /--debug/.test(process.argv[2])
 function initialize () {
@@ -15,14 +16,15 @@ function initialize () {
         let width = display.bounds.width;
         let height = display.bounds.height;
         let settingWindow;
+        let youtubeWindow;
 
 
 
         mainWindow = new BrowserWindow({
-            width: 480,
-            height: 270,
-          /*  x: width - 370,
-            y: height - 230,*/
+            width: 360,
+            height: 180,
+            x: width - 370,
+            y: height - 230,
             webPreferences: {
                 nodeIntegration: true
             },
@@ -34,12 +36,6 @@ function initialize () {
             transparent: true,
 
         });
-
-      //  mainWindow.setFullScreen(true)
-        mainWindow.setFullScreenable(false)
-
-        mainWindow.setMenuBarVisibility(false)
-
 
 
         var appIcon = new Tray(path.join(__dirname, '/assets/images/icon.png'));
@@ -57,51 +53,77 @@ function initialize () {
                 }
             }
         ]);
-        mainWindow.webContents.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/76.0.253539693 Mobile/16F203 Safari/604.1')
 
         appIcon.setContextMenu(contextMenu)
 
         // and load the index.html of the app.
-       // mainWindow.loadURL(path.join('file://', __dirname, '/html/webview.html'))
-        mainWindow.loadURL("https://m.youtube.com/watch?v=I17kM2CwCGM")
-
-        mainWindow.webContents.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/76.0.253539693 Mobile/16F203 Safari/604.1')
-        // Open the DevTools.
-        // win.webContents.openDevTools()
-        mainWindow.webContents.on('did-finish-load', function () {
-
-           mainWindow.webContents.insertCSS('button#p-back-browser{\n' +
-               '    padding: 0 10px;\n' +
-               '}\n' +
-               'i.ic-back-browser{\n' +
-               '    border: solid white;\n' +
-               '    border-width: 0 5px 5px 0;\n' +
-               '    display: inline-block;\n' +
-               '    padding: 5px;\n' +
-               '    transform: rotate(135deg);\n' +
-               '  -webkit-transform: rotate(135deg);\n' +
-               '}');
-        });
-        mainWindow.webContents.on('did-start-loading', function () {
-            mainWindow.webContents.executeJavaScript('setTimeout(function(){\n' +
-                '    if(!document.getElementById("p-back-browser")){\n' +
-                '        var node = document.createElement("button");\n' +
-                '        var icon = document.createElement(\'i\');\n' +
-                '        icon.className = "ic-back-browser"\n' +
-                '        node.id="p-back-browser";\n' +
-                '        node.onclick  = function(){\n' +
-                '            window.history.back();\n' +
-                '        }\n' +
-                '        node.appendChild(icon);\n' +
-                '        document.querySelector(\'.mobile-topbar-header\').prepend(node);\n' +
-                '    }\n' +
-                '}, 1000);');
-        });
+        mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
 
 
         mainWindow.on('minimize',function(event){
             event.preventDefault();
             mainWindow.hide();
+        });
+
+        ipcMain.on('open-youtube', function () {
+            if(!youtubeWindow){
+                youtubeWindow = new BrowserWindow({
+                    width: 480,
+                    height: 270,
+                    x: width - 480,
+                    y: height - 310,
+                    parent: mainWindow,
+                    frame: false,
+                    skipTaskbar: true,
+                    alwaysOnTop: true,
+                    resizable: false,
+                    transparent: true,
+                });
+                youtubeWindow.webContents.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/76.0.253539693 Mobile/16F203 Safari/604.1')
+                youtubeWindow.loadURL("https://m.youtube.com");
+                youtubeWindow.setFullScreenable(false);
+            }
+            youtubeWindow.webContents.on('did-finish-load', function () {
+                youtubeWindow.webContents.insertCSS('body{\n' +
+                    '        overflow: auto!important;\n' +
+                    '    }\n' +
+                    '\n' +
+                    '    i.ic-back-browser {\n' +
+                    '        border: solid #3578E5;\n' +
+                    '        border-width: 0 15px 15px 0;\n' +
+                    '        display: inline-block;\n' +
+                    '        margin-left: 10px;\n' +
+                    '        transform: rotate(45deg);\n' +
+                    '        -webkit-transform: rotate(45deg);\n' +
+                    '    }\n' +
+                    '    .open-app-button, #player{\n' +
+                    '        -webkit-app-region: drag;\n' +
+                    '        -webkit-user-select: none;\n' +
+                    '    }\n' +
+                    '    .titlebar{\n' +
+                    '        width: auto!important;\n' +
+                    '        right: 100px!important;\n' +
+                    '        left: 100px!important;\n' +
+                    '        top: 8px!important;\n' +
+                    '    }');
+            });
+
+            const js = fs.readFileSync('addbutton.js').toString();
+            youtubeWindow.webContents.on('did-start-loading', function () {
+                youtubeWindow.webContents.executeJavaScript(js);
+            });
+            const jsData = fs.readFileSync('showMenuYouTube.js').toString();
+            youtubeWindow.webContents.once('dom-ready', () => {
+                youtubeWindow.webContents.executeJavaScript(jsData, false);
+            });
+
+            youtubeWindow.on('closed', function (event) {
+                youtubeWindow = null
+            });
+
+            youtubeWindow.on('minimize',function(event){
+                youtubeWindow = null
+            });
         });
 
         ipcMain.on('open-setting',function(){

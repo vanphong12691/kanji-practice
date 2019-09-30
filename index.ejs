@@ -126,14 +126,14 @@
 
     <div class="img-kanji">
         <div class="back-main-kanji"><i class="fas fa-chevron-circle-right fa-rotate-180"></i></div>
-        <div class="am-han" data-tooltip="<%= mean %>"><%= mean.substr(0, mean.indexOf(',') > 0 ?  mean.indexOf(',') : mean.length) %></div>
+        <div class="am-han" title="<%= mean %>"><%= mean.substr(0, mean.indexOf(',') > 0 ?  mean.indexOf(',') : mean.length) %></div>
         <div class="draw-kanji" id="draw-kanji"></div>
-        <div class="am-kun"><span data-tooltip="<%=kun%>">訓: <%=kun%></span></div>
-        <div class="am-on"><span data-tooltip="<%=on%>">音: <%= on %></span></div>
+        <div class="am-kun"><span title="<%=kun%>">訓: <%=kun%></span></div>
+        <div class="am-on"><span title="<%=on%>">音: <%= on %></span></div>
         <div class="img-kanji-reload"><i class="fas fa-undo-alt"></i></div>
     </div>
 <div class="kanji-detail">
-    <div class="meaning" data-tooltip="<%=detail.substr(0, detail.indexOf('#') > 0 ? detail.indexOf('#') : detail.length)%>">
+    <div class="meaning" title="<%=detail.substr(0, detail.indexOf('#') > 0 ? detail.indexOf('#') : detail.length)%>">
         <span><%=detail.substr(0, detail.indexOf('#') > 0 ? detail.indexOf('#') : detail.length)%></span>
     </div>
     <div class="example">
@@ -141,7 +141,7 @@
         examples.forEach((item, index) => {
             if(index > 4) return;
         %>
-        <span data-tooltip="<%='('+item.h+') '+item.m%>"><%=item.w+' ('+ item.p+') '+ item.m %></span>
+        <span title="<%='('+item.h+') '+item.m%>"><%=item.w+' ('+ item.p+') '+ item.m %></span>
         <%
         })
         %>
