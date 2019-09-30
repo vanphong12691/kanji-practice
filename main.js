@@ -47,6 +47,14 @@ function initialize () {
                 }
             },
             {
+                label: 'Exit Youtube', click: function () {
+                    if(youtubeWindow){
+                        youtubeWindow.close();
+                        youtubeWindow = null;
+                    }
+                }
+            },
+            {
                 label: 'Quit', click: function () {
                     app.isQuiting = true
                     app.quit()
@@ -65,6 +73,8 @@ function initialize () {
             mainWindow.hide();
         });
 
+
+
         ipcMain.on('open-youtube', function () {
             if(!youtubeWindow){
                 youtubeWindow = new BrowserWindow({
@@ -79,42 +89,18 @@ function initialize () {
                     resizable: false,
                     transparent: true,
                 });
-                youtubeWindow.webContents.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/76.0.253539693 Mobile/16F203 Safari/604.1')
                 youtubeWindow.loadURL("https://m.youtube.com");
                 youtubeWindow.setFullScreenable(false);
             }
             youtubeWindow.webContents.on('did-finish-load', function () {
-                youtubeWindow.webContents.insertCSS('body{\n' +
-                    '        overflow: auto!important;\n' +
-                    '    }\n' +
+                youtubeWindow.webContents.insertCSS('      .style-suggestive{\n' +
+                    '          -webkit-app-region: drag;\n' +
+                    '          -webkit-user-select: none;\n' +
+                    '      }\n' +
                     '\n' +
-                    '    i.ic-back-browser {\n' +
-                    '        border: solid #3578E5;\n' +
-                    '        border-width: 0 15px 15px 0;\n' +
-                    '        display: inline-block;\n' +
-                    '        margin-left: 10px;\n' +
-                    '        transform: rotate(45deg);\n' +
-                    '        -webkit-transform: rotate(45deg);\n' +
-                    '    }\n' +
-                    '    .open-app-button, #player{\n' +
-                    '        -webkit-app-region: drag;\n' +
-                    '        -webkit-user-select: none;\n' +
-                    '    }\n' +
-                    '    .titlebar{\n' +
-                    '        width: auto!important;\n' +
-                    '        right: 100px!important;\n' +
-                    '        left: 100px!important;\n' +
-                    '        top: 8px!important;\n' +
-                    '    }');
-            });
-
-            const js = fs.readFileSync('addbutton.js').toString();
-            youtubeWindow.webContents.on('did-start-loading', function () {
-                youtubeWindow.webContents.executeJavaScript(js);
-            });
-            const jsData = fs.readFileSync('showMenuYouTube.js').toString();
-            youtubeWindow.webContents.once('dom-ready', () => {
-                youtubeWindow.webContents.executeJavaScript(jsData, false);
+                    '      ytd-button-renderer yt-formatted-string.style-suggestive{\n' +
+                    '          display: none!important;\n' +
+                    '      }');
             });
 
             youtubeWindow.on('closed', function (event) {
@@ -135,6 +121,9 @@ function initialize () {
                     frame: false,
                     skipTaskbar: true,
                     transparent: true,
+                    webPreferences: {
+                        nodeIntegration: true
+                    }
                 });
                 settingWindow.loadURL(path.join('file://', __dirname, '/html/setting.html'))
             }
@@ -222,40 +211,3 @@ function makeSingleInstance () {
     })
 }
 initialize();
-
-
-/*
-setTimeout(function(){
-    if(!document.getElementById("p-back-browser")){
-        var node = document.createElement("button");
-        var icon = document.createElement('i');
-        icon.className = "ic-back-browser"
-        node.id="p-back-browser";
-        node.onclick  = function(){
-            const customTitlebar = require('custom-electron-titlebar');
-            new customTitlebar.Titlebar({
-                backgroundColor: customTitlebar.Color.fromHex('#444')
-            });
-            window.history.back();
-        }
-        node.appendChild(icon);
-        document.querySelector('.mobile-topbar-header').prepend(node);
-    }
-}, 1000);
-*/
-
-
-/*
-button#p-back-browser{
-    padding: 0 10px;
-}
-i.ic-back-browser{
-    border: solid white;
-    border-width: 0 5px 5px 0;
-    display: inline-block;
-    padding: 5px;
-    transform: rotate(135deg);
-  -webkit-transform: rotate(135deg);
-}
-*/
-
