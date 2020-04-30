@@ -29,6 +29,6 @@
     "ejs": "^2.7.1",
     "electron-json-storage": "^4.1.8",
     "electron-packager": "^14.0.6",
-    "jquery": "^3.4.1"
+    "jquery": "^3.5.0"
   }
 }
